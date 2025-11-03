@@ -70,7 +70,7 @@ jobs:
           curl -v -u "$USER:$PASS" --fail --show-error -T "$WAR_FILE" \
             "$URL/deploy?path=/train-ticket-reservation&update=true"
 
-  deploy-prepod:
+  deploy-preprod:
    needs: deploy-test
    runs-on: ubuntu-latest
    steps:
@@ -78,34 +78,34 @@ jobs:
       with:
         name: war-file
 
-    - name: 🚀 Deploy to PREPOD
+    - name: 🚀 Deploy to PREPROD
       env:
-        URL: ${{ secrets.TOMCAT_URL_PREPOD }}
-        USER: ${{ secrets.TOMCAT_USER_PREPOD }}
-        PASS: ${{ secrets.TOMCAT_PASS_PREPOD }}
+        URL: ${{ secrets.TOMCAT_URL_PREPROD }}
+        USER: ${{ secrets.TOMCAT_USER_PREPROD }}
+        PASS: ${{ secrets.TOMCAT_PASS_PREPROD }}
       run: |
         WAR_FILE=$(find . -name '*.war' | head -n 1)
-        echo "Deploying $WAR_FILE to PREPOD ($URL)"
+        echo "Deploying $WAR_FILE to PREPROD ($URL)"
         curl -v -u "$USER:$PASS" "$URL/list"
         curl -v -u "$USER:$PASS" --fail --show-error -T "$WAR_FILE" \
           "$URL/deploy?path=/train-ticket-reservation&update=true"
           
-  deploy-pod:
-    needs: deploy-prepod
+  deploy-prod:
+    needs: deploy-preprod
     runs-on: ubuntu-latest
     steps:
     - uses: actions/download-artifact@v4
       with:
         name: war-file
           
-    - name: 🚀 Deploy to POD
+    - name: 🚀 Deploy to PROD
       env:
-        URL: ${{ secrets.TOMCAT_URL_POD }}
-        USER: ${{ secrets.TOMCAT_USER_POD }}
-        PASS: ${{ secrets.TOMCAT_PASS_POD }}
+        URL: ${{ secrets.TOMCAT_URL_PROD }}
+        USER: ${{ secrets.TOMCAT_USER_PROD }}
+        PASS: ${{ secrets.TOMCAT_PASS_PROD }}
       run: |
         WAR_FILE=$(find . -name '*.war' | head -n 1)
-        echo "Deploying $WAR_FILE to POD ($URL)"
+        echo "Deploying $WAR_FILE to PROD ($URL)"
         curl -v -u "$USER:$PASS" "$URL/list"
         curl -v -u "$USER:$PASS" --fail --show-error -T "$WAR_FILE" \
           "$URL/deploy?path=/train-ticket-reservation&update=true"
